@@ -12,7 +12,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ActionArgs, LoaderArgs, redirect } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { BreadcrumbLink } from "~/components";

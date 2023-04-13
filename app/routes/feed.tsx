@@ -1,7 +1,8 @@
 import { OpenInNew } from "@mui/icons-material";
 import { Button, Card, CardActions, CardContent, CardHeader, Link, Stack, Typography } from "@mui/material";
-import { LoaderArgs } from "@remix-run/node";
-import { Link as RouterLink, useLoaderData, V2_MetaFunction } from "@remix-run/react";
+import type { LoaderArgs } from "@remix-run/node";
+import type { V2_MetaFunction } from "@remix-run/react";
+import { Link as RouterLink, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import sanitizeHtml from "sanitize-html";

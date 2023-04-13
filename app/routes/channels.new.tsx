@@ -1,6 +1,8 @@
-import { Alert, Button, Card, CardActions, CardContent, CardHeader, TextField, TextFieldProps } from "@mui/material";
+import type { TextFieldProps } from "@mui/material";
+import { Alert, Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material";
 
-import { ActionArgs, json, redirect } from "@remix-run/node";
+import type { ActionArgs } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import invariant from "tiny-invariant";

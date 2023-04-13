@@ -1,5 +1,6 @@
 import { Authenticator } from "remix-auth";
-import { Auth0Profile, Auth0Strategy } from "remix-auth-auth0";
+import type { Auth0Profile } from "remix-auth-auth0";
+import { Auth0Strategy } from "remix-auth-auth0";
 import { sessionStorage } from "~/services/session.server";
 
 export const authenticator = new Authenticator<Auth0Profile>(sessionStorage);

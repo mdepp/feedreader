@@ -1,7 +1,8 @@
 import { QueryOrder, ReflectMetadataProvider } from "@mikro-orm/core";
-import { EntityManager, MikroORM } from "@mikro-orm/sqlite";
+import type { EntityManager } from "@mikro-orm/sqlite";
+import { MikroORM } from "@mikro-orm/sqlite";
 import { parseXml } from "@rgrove/parse-xml";
-import { Auth0Profile } from "remix-auth-auth0";
+import type { Auth0Profile } from "remix-auth-auth0";
 import invariant from "tiny-invariant";
 import { Channel, HTTPCache, Item } from "~/models";
 import { fetchWithCache, updateFromDocument } from "~/utils/scraper.server";

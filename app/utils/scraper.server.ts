@@ -1,5 +1,6 @@
-import { EntityManager, wrap } from "@mikro-orm/core";
-import { XmlDocument } from "@rgrove/parse-xml";
+import type { EntityManager} from "@mikro-orm/core";
+import { wrap } from "@mikro-orm/core";
+import type { XmlDocument } from "@rgrove/parse-xml";
 import { Channel, HTTPCache, Item } from "~/models";
 import { parseDocument } from "./parser.server";
 

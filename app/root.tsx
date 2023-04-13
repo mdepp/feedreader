@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { Container, CssBaseline, Experimental_CssVarsProvider as CssVarsProvider } from "@mui/material";
 import { experimental_extendTheme as extendTheme, getInitColorSchemeScript, ThemeProvider } from "@mui/material/styles";
 import type {} from "@mui/material/themeCssVarsAugmentation";
-import { LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import { Footer, Header } from "~/components";
 import { authenticator } from "./services/auth.server";

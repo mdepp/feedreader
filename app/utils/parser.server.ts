@@ -1,7 +1,8 @@
 // Idea from https://stackoverflow.com/a/60855343
 
-import { XmlDocument, XmlElement, XmlText } from "@rgrove/parse-xml";
-import { Channel, Item } from "~/models";
+import type { XmlDocument} from "@rgrove/parse-xml";
+import { XmlElement, XmlText } from "@rgrove/parse-xml";
+import type { Channel, Item } from "~/models";
 
 function Optional<In, Out>(transform: (v: In) => Out) {
   function inner(value?: In): Out | undefined {
