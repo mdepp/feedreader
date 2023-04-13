@@ -109,9 +109,11 @@ export const Header = ({ user }: { user: Auth0Profile | null }) => {
     <AppBar variant="outlined" elevation={0} position="static" sx={{ background: "inherit", borderTop: "none" }}>
       <Container maxWidth="md">
         <Toolbar variant="regular" sx={{ alignItems: "center" }} disableGutters>
-          <Typography variant="h4" sx={{ mr: 4, display: user === null ? "flex" : { xs: "none", sm: "flex" } }}>
-            Feedreader
-          </Typography>
+          <RouterLink to="/" style={{ display: "contents", color: "unset" }}>
+            <Typography variant="h4" sx={{ mr: 4, display: user === null ? "flex" : { xs: "none", sm: "flex" } }}>
+              Feedreader
+            </Typography>
+          </RouterLink>
           {user !== null && (
             <>
               <HeaderNavLink component={NavLink} to="/feed">
