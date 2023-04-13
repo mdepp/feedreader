@@ -1,7 +1,7 @@
-import {EntityManager, wrap} from '@mikro-orm/core';
-import {XmlDocument} from '@rgrove/parse-xml';
-import {Channel, HTTPCache, Item} from '~/models';
-import {parseDocument} from './parser.server';
+import { EntityManager, wrap } from "@mikro-orm/core";
+import { XmlDocument } from "@rgrove/parse-xml";
+import { Channel, HTTPCache, Item } from "~/models";
+import { parseDocument } from "./parser.server";
 
 function parseDate(text: string | null) {
   if (text === null) return text;
@@ -12,19 +12,19 @@ export async function fetchWithCache(em: EntityManager, url: string, init?: Requ
   const cacheRepository = em.getRepository(HTTPCache);
   const headers = new Headers(init?.headers);
 
-  const cache = await cacheRepository.upsert({url});
+  const cache = await cacheRepository.upsert({ url });
   if (cache?.etag !== undefined) {
-    headers.set('If-None-Match', cache.etag);
+    headers.set("If-None-Match", cache.etag);
   }
   if (cache?.last_modified !== undefined) {
-    headers.set('If-Modified-Since', cache.last_modified.toUTCString());
+    headers.set("If-Modified-Since", cache.last_modified.toUTCString());
   }
 
-  const response = await fetch(url, {...init, headers});
+  const response = await fetch(url, { ...init, headers });
 
   if (response.status === 304 || response.status === 200) {
-    cache.etag = response.headers.get('ETag') ?? undefined;
-    cache.last_modified = parseDate(response.headers.get('Last-Modified')) ?? undefined;
+    cache.etag = response.headers.get("ETag") ?? undefined;
+    cache.last_modified = parseDate(response.headers.get("Last-Modified")) ?? undefined;
   }
   if (response.status === 200) {
     cache.text = await response.text();
@@ -44,17 +44,17 @@ type UpdateFromDocumentParams = {
 };
 export async function updateFromDocument(
   em: EntityManager,
-  {document, url, userId, initial = false}: UpdateFromDocumentParams
+  { document, url, userId, initial = false }: UpdateFromDocumentParams
 ) {
-  const {parsedChannel, parsedItems} = await parseDocument(document);
+  const { parsedChannel, parsedItems } = await parseDocument(document);
 
   const channel = await em.upsert(new Channel(url, userId));
   wrap(channel).assign(parsedChannel);
 
-  const existingItems = await em.find(Item, {guid: parsedItems.map(item => item.guid)});
+  const existingItems = await em.find(Item, { guid: parsedItems.map((item) => item.guid) });
   // XXX Can't properly control on conflict behavior so check existing items
   // beforehand.
-  const existingItemGuids = existingItems.map(item => item.guid);
+  const existingItemGuids = existingItems.map((item) => item.guid);
   const items = await Promise.all(
     parsedItems.map(async (parsedItem, index) => {
       let pubDate = parsedItem.pubDate;
@@ -62,9 +62,9 @@ export async function updateFromDocument(
         pubDate = new Date();
       }
       const item = await em.upsert(new Item(parsedItem.guid, channel, index));
-      wrap(item).assign({...parsedItem, pubDate});
+      wrap(item).assign({ ...parsedItem, pubDate });
       return item;
     })
   );
-  return {channel, items};
+  return { channel, items };
 }

@@ -1,4 +1,4 @@
-import {Delete, OpenInNew} from '@mui/icons-material';
+import { Delete, OpenInNew } from "@mui/icons-material";
 import {
   Alert,
   Card,
@@ -11,37 +11,37 @@ import {
   Stack,
   Tooltip,
   Typography,
-} from '@mui/material';
-import {ActionArgs, LoaderArgs, redirect} from '@remix-run/node';
-import {Form, Outlet, useActionData, useLoaderData} from '@remix-run/react';
-import invariant from 'tiny-invariant';
-import {BreadcrumbLink} from '~/components';
-import {authenticator} from '~/services/auth.server';
-import database from '~/services/database.server';
+} from "@mui/material";
+import { ActionArgs, LoaderArgs, redirect } from "@remix-run/node";
+import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
+import invariant from "tiny-invariant";
+import { BreadcrumbLink } from "~/components";
+import { authenticator } from "~/services/auth.server";
+import database from "~/services/database.server";
 
 export const handle = {
-  title: () => 'Channels',
+  title: () => "Channels",
   breadcrumb: () => <BreadcrumbLink to="/channels">Channels</BreadcrumbLink>,
 };
 
-export const loader = async ({request}: LoaderArgs) => {
-  const user = await authenticator.isAuthenticated(request, {failureRedirect: '/login'});
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await authenticator.isAuthenticated(request, { failureRedirect: "/login" });
   return database.listChannels(user);
 };
 
-export const action = async ({request}: ActionArgs) => {
-  const user = await authenticator.isAuthenticated(request, {failureRedirect: '/login'});
+export const action = async ({ request }: ActionArgs) => {
+  const user = await authenticator.isAuthenticated(request, { failureRedirect: "/login" });
 
   const formData = await request.formData();
-  const id = formData.get('id');
-  invariant(typeof id === 'string', 'id must be a string');
+  const id = formData.get("id");
+  invariant(typeof id === "string", "id must be a string");
 
   try {
     await database.deleteChannel(user, parseInt(id, 10));
   } catch (err) {
-    return 'Failed to delete channel';
+    return "Failed to delete channel";
   }
-  return redirect('/channels');
+  return redirect("/channels");
 };
 
 function ChannelsCard() {
@@ -51,11 +51,11 @@ function ChannelsCard() {
   return (
     <Card>
       <CardContent>
-        {typeof errorMessage === 'string' && <Alert severity="error">{errorMessage}</Alert>}
+        {typeof errorMessage === "string" && <Alert severity="error">{errorMessage}</Alert>}
         <List>
-          {channels.map(channel => (
+          {channels.map((channel) => (
             <ListItem key={channel.id}>
-              <ListItemText primary={channel.title} secondary={channel.description} sx={{pr: 6}} />
+              <ListItemText primary={channel.title} secondary={channel.description} sx={{ pr: 6 }} />
               <ListItemSecondaryAction>
                 <Tooltip title="Visit Website">
                   <IconButton
@@ -68,7 +68,7 @@ function ChannelsCard() {
                     <OpenInNew />
                   </IconButton>
                 </Tooltip>
-                <Form method="post" style={{display: 'contents'}}>
+                <Form method="post" style={{ display: "contents" }}>
                   <input name="id" defaultValue={channel.id} hidden />
                   <Tooltip title="Delete Channel">
                     <IconButton type="submit" color="primary">

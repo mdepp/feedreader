@@ -1,14 +1,14 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 
-import {Container, CssBaseline, Experimental_CssVarsProvider as CssVarsProvider} from '@mui/material';
-import {experimental_extendTheme as extendTheme, getInitColorSchemeScript, ThemeProvider} from '@mui/material/styles';
-import type {} from '@mui/material/themeCssVarsAugmentation';
-import {LoaderArgs} from '@remix-run/node';
-import {Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData} from '@remix-run/react';
-import {Footer, Header} from '~/components';
-import {authenticator} from './services/auth.server';
+import { Container, CssBaseline, Experimental_CssVarsProvider as CssVarsProvider } from "@mui/material";
+import { experimental_extendTheme as extendTheme, getInitColorSchemeScript, ThemeProvider } from "@mui/material/styles";
+import type {} from "@mui/material/themeCssVarsAugmentation";
+import { LoaderArgs } from "@remix-run/node";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
+import { Footer, Header } from "~/components";
+import { authenticator } from "./services/auth.server";
 
-export const loader = async ({request}: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
   return authenticator.isAuthenticated(request);
 };
 
@@ -25,14 +25,14 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
+      <body style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
         {getInitColorSchemeScript({})}
         <CssVarsProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <Header user={user} />
-            <div style={{flexGrow: 1, overflow: 'auto'}}>
-              <Container maxWidth="md" sx={{py: 4}}>
+            <div style={{ flexGrow: 1, overflow: "auto" }}>
+              <Container maxWidth="md" sx={{ py: 4 }}>
                 <Outlet />
               </Container>
             </div>

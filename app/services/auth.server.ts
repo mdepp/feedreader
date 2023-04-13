@@ -1,6 +1,6 @@
-import {Authenticator} from 'remix-auth';
-import {Auth0Profile, Auth0Strategy} from 'remix-auth-auth0';
-import {sessionStorage} from '~/services/session.server';
+import { Authenticator } from "remix-auth";
+import { Auth0Profile, Auth0Strategy } from "remix-auth-auth0";
+import { sessionStorage } from "~/services/session.server";
 
 export const authenticator = new Authenticator<Auth0Profile>(sessionStorage);
 
@@ -11,7 +11,7 @@ const auth0Strategy = new Auth0Strategy(
     clientSecret: process.env.AUTH0_CLIENT_SECRET!,
     domain: process.env.AUTH0_DOMAIN!,
   },
-  async ({profile}) => profile
+  async ({ profile }) => profile
 );
 
 authenticator.use(auth0Strategy);

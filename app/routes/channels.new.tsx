@@ -1,41 +1,41 @@
-import {Alert, Button, Card, CardActions, CardContent, CardHeader, TextField, TextFieldProps} from '@mui/material';
+import { Alert, Button, Card, CardActions, CardContent, CardHeader, TextField, TextFieldProps } from "@mui/material";
 
-import {ActionArgs, json, redirect} from '@remix-run/node';
-import {Form, Link, useActionData, useNavigation} from '@remix-run/react';
-import {useEffect, useState} from 'react';
-import invariant from 'tiny-invariant';
-import {authenticator} from '~/services/auth.server';
-import database from '~/services/database.server';
+import { ActionArgs, json, redirect } from "@remix-run/node";
+import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
+import { useEffect, useState } from "react";
+import invariant from "tiny-invariant";
+import { authenticator } from "~/services/auth.server";
+import database from "~/services/database.server";
 
-export const action = async ({request}: ActionArgs): Promise<{url?: string | null; message?: string}> => {
-  const user = await authenticator.isAuthenticated(request, {failureRedirect: '/login'});
+export const action = async ({ request }: ActionArgs): Promise<{ url?: string | null; message?: string }> => {
+  const user = await authenticator.isAuthenticated(request, { failureRedirect: "/login" });
 
   const formData = await request.formData();
-  const url = formData.get('url');
+  const url = formData.get("url");
 
   const errors = {
-    url: url ? null : 'URL is required',
+    url: url ? null : "URL is required",
   };
-  if (Object.values(errors).some(message => message)) {
+  if (Object.values(errors).some((message) => message)) {
     return json(errors);
   }
 
-  invariant(typeof url === 'string', 'url must be a string');
+  invariant(typeof url === "string", "url must be a string");
 
   let channel;
   try {
     channel = await database.createChannel(user, url);
   } catch (err) {
-    return {message: 'Failed to add channel'};
+    return { message: "Failed to add channel" };
   }
   if (channel === null) {
-    return {message: 'A channel with this URL already exists'};
+    return { message: "A channel with this URL already exists" };
   }
-  return redirect('/channels');
+  return redirect("/channels");
 };
 
-function CustomTextField(props: Omit<TextFieldProps, 'label'> & {label?: string}) {
-  const {label, ...rest} = props;
+function CustomTextField(props: Omit<TextFieldProps, "label"> & { label?: string }) {
+  const { label, ...rest } = props;
 
   const [overrideLabel, setOverrideLabel] = useState<string | undefined>(undefined);
   const [overridePlaceholder, setOverridePlaceholder] = useState(label);
@@ -50,7 +50,7 @@ function CustomTextField(props: Omit<TextFieldProps, 'label'> & {label?: string}
 
 export default function New() {
   const navigation = useNavigation();
-  const isSubmitting = navigation.state === 'submitting';
+  const isSubmitting = navigation.state === "submitting";
   const errors = useActionData<typeof action>();
 
   return (
@@ -67,7 +67,7 @@ export default function New() {
             helperText={errors?.url}
           />
           {Boolean(errors?.message) && (
-            <Alert severity="error" sx={{mt: 1}}>
+            <Alert severity="error" sx={{ mt: 1 }}>
               {errors?.message}
             </Alert>
           )}
@@ -76,7 +76,7 @@ export default function New() {
           <Button variant="contained" color="primary" type="submit" disabled={isSubmitting}>
             Submit
           </Button>
-          <Button component={Link} to="/channels" sx={{ml: 1}}>
+          <Button component={Link} to="/channels" sx={{ ml: 1 }}>
             Cancel
           </Button>
         </CardActions>

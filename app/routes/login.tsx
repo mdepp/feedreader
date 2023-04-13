@@ -1,5 +1,5 @@
-import {Button} from '@mui/material';
-import {Form} from '@remix-run/react';
+import { Button } from "@mui/material";
+import { Form } from "@remix-run/react";
 
 export default function Login() {
   return (
