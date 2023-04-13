@@ -8,7 +8,7 @@ export class HTTPCache {
   etag?: string;
   @Property({ type: "datetime", nullable: true })
   last_modified?: Date;
-  @Property({ type: "string", nullable: true })
+  @Property({ type: "text", nullable: true })
   text?: string;
 
   constructor(url: string) {
@@ -28,7 +28,7 @@ export class Channel {
   title?: string;
   @Property({ type: "string", nullable: true })
   link?: string;
-  @Property({ type: "string", nullable: true })
+  @Property({ type: "string", nullable: true, length: 4096 })
   description?: string;
   @Property({ type: "datetime", nullable: true })
   pubDate?: Date;
@@ -53,7 +53,7 @@ export class Item {
   title?: string;
   @Property({ type: "string", nullable: true })
   link?: string;
-  @Property({ type: "string", nullable: true })
+  @Property({ type: "string", nullable: true, length: 4096 })
   description?: string;
   @Property({ type: "string", nullable: true })
   author?: string;

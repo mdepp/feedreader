@@ -1,6 +1,6 @@
 import { QueryOrder, ReflectMetadataProvider } from "@mikro-orm/core";
-import type { EntityManager } from "@mikro-orm/sqlite";
-import { MikroORM } from "@mikro-orm/sqlite";
+import type { EntityManager } from "@mikro-orm/postgresql";
+import { MikroORM } from "@mikro-orm/postgresql";
 import { parseXml } from "@rgrove/parse-xml";
 import type { Auth0Profile } from "remix-auth-auth0";
 import invariant from "tiny-invariant";
@@ -14,9 +14,10 @@ class DBService {
     this.ormPromise = MikroORM.init({
       metadataProvider: ReflectMetadataProvider,
       entities: [HTTPCache, Channel, Item],
-      dbName: "database.db",
-      type: "sqlite",
+      clientUrl: process.env.DATABASE_URL,
+      type: "postgresql",
       debug: true,
+      migrations: { path: "./migrations" },
     });
   }
 
@@ -51,20 +52,6 @@ class DBService {
     });
   }
 
-  async syncChannel(user: Auth0Profile, id: number) {
-    invariant(user.id !== undefined, "User id must be defined");
-    const userId = user.id;
-    return this.transactional(async (em) => {
-      const existingChannel = await em.findOne(Channel, { id, userId });
-      invariant(existingChannel !== null, "Channel must exist");
-      const text = await fetchWithCache(em, existingChannel.url);
-      const document = parseXml(text ?? "");
-      const { channel } = await updateFromDocument(em, { document, url: existingChannel.url, userId });
-      await em.commit();
-      return channel;
-    });
-  }
-
   async deleteChannel(user: Auth0Profile, id: number) {
     this.transactional(async (em) => {
       const channel = await em.findOne(Channel, { id, userId: user.id });
@@ -83,6 +70,25 @@ class DBService {
         { orderBy: [{ pubDate: QueryOrder.DESC_NULLS_LAST }, { index: QueryOrder.ASC }], limit: 20 }
       )
     );
+  }
+
+  async sync() {
+    return this.transactional(async (em) => {
+      const channels = await em.find(Channel, {});
+      await Promise.all(
+        channels.map(async (channel) => {
+          const text = await fetchWithCache(em, channel.url);
+          const document = parseXml(text ?? "");
+          await updateFromDocument(em, { document, url: channel.url, userId: channel.userId });
+        })
+      );
+      await em.commit();
+    });
+  }
+
+  async generate() {
+    const orm = await this.ormPromise;
+    orm.getSchemaGenerator().createSchema();
   }
 }
 

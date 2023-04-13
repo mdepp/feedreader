@@ -1,0 +1,36 @@
+# fly.toml file generated for weathered-snow-5705 on 2023-04-12T19:45:41-06:00
+
+app = "weathered-snow-5705"
+kill_signal = "SIGINT"
+kill_timeout = 5
+primary_region = "yyz"
+
+
+[processes]
+  app = "sh start_with_migrations.sh"
+  worker = "npx ts-node scripts/sync.ts"
+
+[env]
+  PORT = "8080"
+
+# [mounts]
+#   source="database"
+#   destination="/data"
+
+[[services]]
+  internal_port = 8080
+  processes = ["app", "worker"]
+  protocol = "tcp"
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    force_https = true
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
