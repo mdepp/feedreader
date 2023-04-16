@@ -17,7 +17,7 @@ export class DBService {
       entities: [HTTPCache, Channel, Item],
       clientUrl: getConnectionUrl(),
       type: "postgresql",
-      debug: true,
+      debug: process.env.NODE_ENV === "development",
       migrations: { path: "./migrations" },
     });
   }
