@@ -5,16 +5,17 @@ import { parseXml } from "@rgrove/parse-xml";
 import type { Auth0Profile } from "remix-auth-auth0";
 import invariant from "tiny-invariant";
 import { Channel, HTTPCache, Item } from "~/models";
+import getConnectionUrl from "~/utils/getConnectionUrl";
 import { fetchWithCache, updateFromDocument } from "~/utils/scraper.server";
 
-class DBService {
+export class DBService {
   private ormPromise: Promise<MikroORM>;
 
   public constructor() {
     this.ormPromise = MikroORM.init({
       metadataProvider: ReflectMetadataProvider,
       entities: [HTTPCache, Channel, Item],
-      clientUrl: process.env.DATABASE_URL,
+      clientUrl: getConnectionUrl(),
       type: "postgresql",
       debug: true,
       migrations: { path: "./migrations" },
