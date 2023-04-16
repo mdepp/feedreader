@@ -2,7 +2,7 @@ import type { LinkProps } from "@mui/material";
 import { AppBar, Button, Container, FormControlLabel, Link, styled, Switch, Toolbar, Typography } from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
 import type {} from "@mui/material/themeCssVarsAugmentation";
-import { Form, Link as RouterLink, NavLink, useMatches } from "@remix-run/react";
+import { Form, NavLink, Link as RouterLink, useMatches } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import type { Auth0Profile } from "remix-auth-auth0";
 
@@ -106,10 +106,10 @@ const HeaderNavLink = styled(Button)({
 
 export const Header = ({ user }: { user: Auth0Profile | null }) => {
   return (
-    <AppBar variant="outlined" elevation={0} position="static" sx={{ background: "inherit", borderTop: "none" }}>
+    <AppBar variant="outlined" elevation={0} position="static" sx={{ borderTop: "none" }} color="transparent">
       <Container maxWidth="md">
         <Toolbar variant="regular" sx={{ alignItems: "center" }} disableGutters>
-          <RouterLink to="/" style={{ display: "contents", color: "unset" }}>
+          <RouterLink to="/" style={{ display: "contents", color: "var(--mui-palette-text-primary)" }}>
             <Typography variant="h4" sx={{ mr: 4, display: user === null ? "flex" : { xs: "none", sm: "flex" } }}>
               Feedreader
             </Typography>
