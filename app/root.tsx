@@ -22,13 +22,17 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import type { PropsWithChildren } from "react";
-import { Footer, Header } from "~/components";
+import { Footer, Header } from "./components";
 import { useResetEmotionCache } from "./emotion";
 import { authenticator } from "./services/auth.server";
 import theme from "./theme";
 
 export const meta: MetaFunction = () => {
-  return [{ charSet: "utf-8", title: "Feedreader", viewport: "width=device-width,initial-scale=1" }];
+  return [
+    { title: "Feedreader" },
+    { charSet: "utf-8" },
+    { name: "viewport", content: "width=device-width,initial-scale=1" },
+  ];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
