@@ -1,7 +1,6 @@
 import { OpenInNew } from "@mui/icons-material";
 import { Button, Card, CardActions, CardContent, CardHeader, Link, Stack, Typography } from "@mui/material";
 import type { LoaderArgs } from "@remix-run/node";
-import type { V2_MetaFunction } from "@remix-run/react";
 import { Link as RouterLink, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -10,10 +9,6 @@ import { authenticator } from "~/services/auth.server";
 import database from "~/services/database.server";
 
 dayjs.extend(relativeTime);
-
-export const meta: V2_MetaFunction = () => {
-  return [{ title: "Feedreader 2" }];
-};
 
 export const handle = {
   title: () => "Feed",
