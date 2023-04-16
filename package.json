@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.0.1",
+    "@emotion/cache": "^11.10.7",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mikro-orm/cli": "^5.6.16",
@@ -43,7 +44,6 @@
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.8",
     "eslint": "^8.27.0",
-    "tailwindcss": "^3.3.1",
     "typescript": "^4.8.4"
   },
   "engines": {
