@@ -1,5 +1,4 @@
-import type { LinkProps } from "@mui/material";
-import { AppBar, Button, Container, FormControlLabel, Link, styled, Switch, Toolbar, Typography } from "@mui/material";
+import { AppBar, Button, Container, FormControlLabel, styled, Switch, Toolbar, Typography } from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
 import type {} from "@mui/material/themeCssVarsAugmentation";
 import { Form, NavLink, Link as RouterLink, useMatches } from "@remix-run/react";
@@ -45,38 +44,6 @@ export const Footer = () => {
     >
       <ModeSwitcher />
     </footer>
-  );
-};
-
-export const BreadcrumbLink = (props: LinkProps<typeof RouterLink>) => {
-  return <Link component={RouterLink} {...props} />;
-};
-
-export const Breadcrumb = () => {
-  const matches = useMatches();
-  const rootLink = (
-    <li style={{ display: "inline" }}>
-      <BreadcrumbLink to="/">Feedreader</BreadcrumbLink>
-    </li>
-  );
-  const links = [rootLink].concat(
-    matches
-      .filter((match) => match.handle && match.handle.breadcrumb)
-      .map((match, index) => (
-        <li style={{ display: "inline" }} key={index}>
-          {match.handle.breadcrumb(match)}
-        </li>
-      ))
-  );
-  return (
-    <Typography component="ol" variant="subtitle1">
-      {links.map((link, index) => (
-        <>
-          {link}
-          {index < links.length - 1 && <span key={`divider-${index}`}> / </span>}
-        </>
-      ))}
-    </Typography>
   );
 };
 

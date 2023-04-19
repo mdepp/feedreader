@@ -16,13 +16,11 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { BreadcrumbLink } from "~/components";
 import { authenticator } from "~/services/auth.server";
 import database from "~/services/database.server";
 
 export const handle = {
   title: () => "Channels",
-  breadcrumb: () => <BreadcrumbLink to="/channels">Channels</BreadcrumbLink>,
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
