@@ -1,11 +1,11 @@
 import { QueryOrder, ReflectMetadataProvider } from "@mikro-orm/core";
 import type { EntityManager } from "@mikro-orm/postgresql";
 import { MikroORM } from "@mikro-orm/postgresql";
-import { parseXml } from "@rgrove/parse-xml";
 import type { Auth0Profile } from "remix-auth-auth0";
 import invariant from "tiny-invariant";
 import { Channel, HTTPCache, Item } from "~/models";
 import getConnectionUrl from "~/utils/getConnectionUrl";
+import { guessDocumentType, parseHtml } from "~/utils/parser.server";
 import { fetchWithCache, updateFromDocument } from "~/utils/scraper.server";
 
 export class DBService {
@@ -45,8 +45,17 @@ export class DBService {
       if (existingChannel !== null) {
         return null;
       }
-      const text = await fetchWithCache(em, url);
-      const document = parseXml(text ?? "");
+      let document = await fetchWithCache(em, url);
+      invariant(typeof document === "string", "Failed to fetch data");
+      if (guessDocumentType(document) === "html") {
+        const { feeds } = parseHtml(document);
+        invariant(feeds.length > 0, "Document has no feeds");
+        // XXX For now just use the first feed
+        invariant(typeof feeds[0].href === "string", "Feed must have href");
+        const feedUrl = new URL(feeds[0].href, url).href;
+        document = await fetchWithCache(em, feedUrl);
+        invariant(typeof document === "string", "Failed to fetch data");
+      }
       const { channel } = await updateFromDocument(em, { document, url, userId, initial: true });
       await em.commit();
       return channel;
@@ -78,8 +87,8 @@ export class DBService {
       const channels = await em.find(Channel, {});
       await Promise.all(
         channels.map(async (channel) => {
-          const text = await fetchWithCache(em, channel.url);
-          const document = parseXml(text ?? "");
+          const document = await fetchWithCache(em, channel.url);
+          invariant(typeof document === "string", "Failed to fetch data");
           await updateFromDocument(em, { document, url: channel.url, userId: channel.userId });
         })
       );

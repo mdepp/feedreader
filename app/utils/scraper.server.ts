@@ -1,8 +1,7 @@
-import type { EntityManager} from "@mikro-orm/core";
+import type { EntityManager } from "@mikro-orm/core";
 import { wrap } from "@mikro-orm/core";
-import type { XmlDocument } from "@rgrove/parse-xml";
 import { Channel, HTTPCache, Item } from "~/models";
-import { parseDocument } from "./parser.server";
+import { parseRSS } from "./parser.server";
 
 function parseDate(text: string | null) {
   if (text === null) return text;
@@ -38,7 +37,7 @@ export async function fetchWithCache(em: EntityManager, url: string, init?: Requ
 }
 
 type UpdateFromDocumentParams = {
-  document: XmlDocument;
+  document: string;
   url: string;
   userId: string;
   initial?: boolean;
@@ -47,7 +46,7 @@ export async function updateFromDocument(
   em: EntityManager,
   { document, url, userId, initial = false }: UpdateFromDocumentParams
 ) {
-  const { parsedChannel, parsedItems } = await parseDocument(document);
+  const { parsedChannel, parsedItems } = await parseRSS(document);
 
   const channel = await em.upsert(new Channel(url, userId));
   wrap(channel).assign(parsedChannel);

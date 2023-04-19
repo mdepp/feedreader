@@ -1,91 +1,68 @@
 // Idea from https://stackoverflow.com/a/60855343
 
-import type { XmlDocument} from "@rgrove/parse-xml";
-import { XmlElement, XmlText } from "@rgrove/parse-xml";
+import { load } from "cheerio";
+import { cheerioJsonMapper } from "cheerio-json-mapper";
 import type { Channel, Item } from "~/models";
 
-function Optional<In, Out>(transform: (v: In) => Out) {
-  function inner(value?: In): Out | undefined {
-    if (value === undefined) return undefined;
-    else return transform(value);
-  }
-  return inner;
+export function guessDocumentType(text: string) {
+  if (text.toLowerCase().startsWith("<!doctype html>")) return "html";
+  if (text.toLowerCase().startsWith("<html>")) return "html";
+  return "xml";
 }
 
-function Required<In, Out>(transform: (v: In) => Out) {
-  function inner(value?: In): Out {
-    if (value === undefined) throw "Transform is required";
-    else return transform(value);
-  }
-  return inner;
-}
-
-type TransformSpec<T> = {
-  [K in keyof T]: (v: any) => T[K];
-};
-function parseElement<T>(element: XmlElement, spec: TransformSpec<T>): T {
-  const entries: any[] = Object.entries(spec).map(([key, transform]) => {
-    const keyElement = element.children.find(
-      (child): child is XmlElement => child instanceof XmlElement && child.name === key
-    );
-    const valueElement = keyElement?.children.find((child): child is XmlText => child instanceof XmlText);
-    return [key, (transform as TransformSpec<T>[keyof T])(valueElement?.text)];
-  });
-  return Object.fromEntries(entries) as T;
-}
-
-export async function parseDocument(document: XmlDocument) {
-  const rssNode = document.children.find(
-    (child): child is XmlElement => child instanceof XmlElement && child.name === "rss"
-  );
-  const channelNode = rssNode?.children.find(
-    (child): child is XmlElement => child instanceof XmlElement && child.name === "channel"
-  );
-  const itemsNodes = channelNode?.children.filter(
-    (child): child is XmlElement => child instanceof XmlElement && child.name === "item"
-  );
-
-  if (channelNode === undefined || itemsNodes === undefined) throw new Error("Invalid RSS document");
-
-  const parsedChannel = await parseChannel(channelNode);
-  const parsedItems = await parseItems(itemsNodes);
-  return { parsedChannel, parsedItems };
+export function parseHtml(document: string) {
+  const $ = load(document);
+  const feeds = $('head link[type="application/rss+xml"]')
+    .map((_, el) => ({ href: $(el).attr("href"), title: $(el).attr("title") }))
+    .get();
+  return { feeds };
 }
 
 type ParsedChannel = Omit<Channel, "id" | "url" | "items" | "userId">;
-async function parseChannel(channelNode: XmlElement): Promise<ParsedChannel> {
-  return parseElement(channelNode, {
-    title: Optional(String),
-    link: Optional(String),
-    description: Optional(String),
-    pubDate: Optional((v) => new Date(v)),
+type ParsedItem = Omit<Item, "channel" | "index">;
+
+export async function parseRSS(document: string) {
+  const $ = load(document, { xmlMode: true });
+
+  const template = {
+    channel: {
+      $: "rss > channel",
+      title: "> title",
+      link: "> link",
+      description: "> description",
+      pubDate: "> pubDate | parseAs:date",
+    },
+    items: [
+      {
+        $: "rss > channel > item",
+        guid: "> guid",
+        title: "> title",
+        link: "> link",
+        description: "> description",
+        author: "> author",
+        category: "> category",
+        comments: "> comments",
+        enclosure: "> enclosure",
+        pubDate: "> pubDate | parseAs:date",
+      },
+    ],
+  };
+
+  const data = (await cheerioJsonMapper($(":root"), template)) as {
+    channel: Partial<ParsedChannel>;
+    items: Partial<ParsedItem>[];
+  };
+
+  const parsedChannel = data.channel as ParsedChannel;
+  const parsedItems = data.items.map((item) => {
+    const guid = item.guid ?? syntheticGuid(item.title, item.description);
+    if (guid === undefined) throw new Error("Item has no viable guid");
+    return { ...item, guid } as ParsedItem;
   });
+  return { parsedChannel, parsedItems };
 }
 
 function syntheticGuid(title?: string, description?: string) {
   if (title === undefined && description === undefined) return undefined;
   return `${title} ${description}`;
-}
-
-type ParsedItem = Omit<Item, "channel" | "index">;
-async function parseItems(itemNodes: XmlElement[]): Promise<ParsedItem[]> {
-  return itemNodes
-    .map((itemNode) => {
-      return parseElement(itemNode, {
-        guid: Optional(String),
-        title: Optional(String),
-        link: Optional(String),
-        description: Optional(String),
-        author: Optional(String),
-        category: Optional(String),
-        comments: Optional(String),
-        enclosure: Optional(String),
-        pubDate: Optional((v) => new Date(v)),
-      });
-    })
-    .map((parsedItem) => {
-      const guid = parsedItem.guid ?? syntheticGuid(parsedItem.title, parsedItem.description);
-      if (guid === undefined) throw new Error("Item has no viable guid");
-      return { ...parsedItem, guid };
-    });
 }
