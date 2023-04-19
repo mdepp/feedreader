@@ -10,10 +10,6 @@ import database from "~/services/database.server";
 
 dayjs.extend(relativeTime);
 
-export const handle = {
-  title: () => "Feed",
-};
-
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/login" });
 

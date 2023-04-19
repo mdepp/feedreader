@@ -19,10 +19,6 @@ import invariant from "tiny-invariant";
 import { authenticator } from "~/services/auth.server";
 import database from "~/services/database.server";
 
-export const handle = {
-  title: () => "Channels",
-};
-
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/login" });
   return database.listChannels(user);
