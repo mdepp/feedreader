@@ -1,7 +1,7 @@
 import { AppBar, Button, Container, FormControlLabel, styled, Switch, Toolbar, Typography } from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
 import type {} from "@mui/material/themeCssVarsAugmentation";
-import { Form, NavLink, Link as RouterLink, useMatches } from "@remix-run/react";
+import { Form, NavLink, Link as RouterLink } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import type { Auth0Profile } from "remix-auth-auth0";
 
@@ -45,15 +45,6 @@ export const Footer = () => {
       <ModeSwitcher />
     </footer>
   );
-};
-
-export const Title = () => {
-  const matches = useMatches();
-  const titles = matches
-    .map((match) => match.handle?.title(match))
-    .filter((title): title is string => typeof title === "string");
-  const title = titles[titles.length - 1];
-  return <Typography variant="h3">{title}</Typography>;
 };
 
 const HeaderNavLink = styled(Button)({
