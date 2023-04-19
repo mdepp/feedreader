@@ -28,6 +28,7 @@ export const action = async ({ request }: ActionArgs): Promise<{ url?: string | 
   try {
     channel = await database.createChannel(user, url);
   } catch (err) {
+    console.error(err);
     return { message: "Failed to add channel" };
   }
   if (channel === null) {

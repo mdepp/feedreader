@@ -34,6 +34,7 @@ export const action = async ({ request }: ActionArgs) => {
   try {
     await database.deleteChannel(user, parseInt(id, 10));
   } catch (err) {
+    console.error(err);
     return "Failed to delete channel";
   }
   return redirect("/channels");

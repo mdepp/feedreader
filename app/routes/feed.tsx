@@ -21,6 +21,7 @@ function formatHostname(url?: string) {
   try {
     return new URL(url).hostname;
   } catch (err) {
+    console.error(err);
     return undefined;
   }
 }
