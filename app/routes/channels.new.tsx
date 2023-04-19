@@ -62,6 +62,7 @@ export default function New() {
         <CardHeader title="New Channel" />
         <CardContent>
           <CustomTextField
+            type="url"
             name="url"
             label="URL"
             size="small"
