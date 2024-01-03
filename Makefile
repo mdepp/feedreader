@@ -1,3 +1,5 @@
+DOCKER=sudo docker
+
 ifneq (,$(wildcard ./.env))
     include .env
     export
@@ -6,7 +8,8 @@ endif
 
 .PHONY: dev-db
 dev-db:
-	docker stop feedreader-db
-	docker rm feedreader-db
-	docker run --name feedreader-db  -p $(POSTGRES_PORT):5432 $(ENV_FILE_PARAM) -d postgres
-	dotenv -- npx mikro-orm migration:fresh
+	$(DOCKER) stop feedreader-db || echo "Nothing to stop"
+	$(DOCKER) rm feedreader-db || echo "Nothing to remove"
+	$(DOCKER) run --name feedreader-db  --network=host $(ENV_FILE_PARAM) -d postgres:16
+	sleep 2
+	dotenv -f .env run -- npx mikro-orm migration:fresh
