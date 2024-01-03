@@ -13,4 +13,5 @@ module.exports = {
     v2_dev: { port: 3002 },
     v2_headers: true,
   },
+  serverModuleFormat: 'cjs'
 };
