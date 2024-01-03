@@ -10,7 +10,7 @@ import {
   getInitColorSchemeScript,
   unstable_useEnhancedEffect as useEnhancedEffect,
 } from "@mui/material";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -22,6 +22,7 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import type { PropsWithChildren } from "react";
+import stylesheet from "~/tailwind.css";
 import { Footer, Header } from "./components";
 import { useResetEmotionCache } from "./emotion";
 import { authenticator } from "./services/auth.server";
@@ -38,6 +39,8 @@ export const meta: MetaFunction = () => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   return authenticator.isAuthenticated(request);
 };
+
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheet }];
 
 function Document({ children }: PropsWithChildren) {
   const resetCache = useResetEmotionCache();
