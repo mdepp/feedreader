@@ -1,4 +1,4 @@
-import { AppBar, Button, Container, FormControlLabel, styled, Switch, Toolbar, Typography } from "@mui/material";
+import { Button, FormControlLabel, styled, Switch } from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
 import type {} from "@mui/material/themeCssVarsAugmentation";
 import { Form, NavLink, Link as RouterLink } from "@remix-run/react";
@@ -19,6 +19,7 @@ export const ModeSwitcher = () => {
 
   return (
     <FormControlLabel
+      data-theme-mode={mode}
       label={mode === "light" ? "Light" : "Dark"}
       control={
         <Switch
@@ -64,30 +65,27 @@ const HeaderNavLink = styled(Button)({
 
 export const Header = ({ user }: { user: Auth0Profile | null }) => {
   return (
-    <AppBar variant="outlined" elevation={0} position="static" sx={{ borderTop: "none" }} color="transparent">
-      <Container maxWidth="md">
-        <Toolbar variant="regular" sx={{ alignItems: "center" }} disableGutters>
-          <RouterLink to="/" style={{ display: "contents", color: "var(--mui-palette-text-primary)" }}>
-            <Typography variant="h4" sx={{ mr: 4, display: user === null ? "flex" : { xs: "none", sm: "flex" } }}>
-              Feedreader
-            </Typography>
-          </RouterLink>
-          {user !== null && (
-            <>
-              <HeaderNavLink component={NavLink} to="/feed">
-                Feed
-              </HeaderNavLink>
-              <HeaderNavLink component={NavLink} to="/channels">
-                Channels
-              </HeaderNavLink>
-              <div style={{ flexGrow: 1 }} />
-              <Form action="/auth/logout" method="post">
-                <Button type="submit">Log out</Button>
-              </Form>
-            </>
-          )}
-        </Toolbar>
-      </Container>
-    </AppBar>
+    <header className="header">
+      <div className="header__container">
+        <h1 className="header__title">
+          <RouterLink to="/">Feedreader</RouterLink>
+        </h1>
+        {user !== null && (
+          <>
+            <NavLink className="header__link" to="/feed">
+              Feed
+            </NavLink>
+            <NavLink className="header__link" to="/channels">
+              Channels
+            </NavLink>
+            <Form className="header__logout" action="/auth/logout" method="post">
+              <button className="button button--text" type="submit">
+                Log out
+              </button>
+            </Form>
+          </>
+        )}
+      </div>
+    </header>
   );
 };
