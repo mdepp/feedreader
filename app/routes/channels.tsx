@@ -12,19 +12,19 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { authenticator } from "~/services/auth.server";
 import database from "~/services/database.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/login" });
   return database.listChannels(user);
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/login" });
 
   const formData = await request.formData();

@@ -5,13 +5,6 @@ module.exports = {
   // assetsBuildDirectory: "public/build",
   // serverBuildPath: "build/index.js",
   // publicPath: "/build/",
-  future: {
-    v2_errorBoundary: true,
-    v2_meta: true,
-    v2_normalizeFormMethod: true,
-    v2_routeConvention: true,
-    v2_dev: { port: 3002 },
-    v2_headers: true,
-  },
-  serverModuleFormat: 'cjs'
+  serverModuleFormat: 'cjs',
+  dev: { port: 3002 },
 };

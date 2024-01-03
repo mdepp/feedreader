@@ -1,7 +1,7 @@
 import type { TextFieldProps } from "@mui/material";
 import { Alert, Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material";
 
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import invariant from "tiny-invariant";
 import { authenticator } from "~/services/auth.server";
 import database from "~/services/database.server";
 
-export const action = async ({ request }: ActionArgs): Promise<{ url?: string | null; message?: string }> => {
+export const action = async ({ request }: ActionFunctionArgs): Promise<{ url?: string | null; message?: string }> => {
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/login" });
 
   const formData = await request.formData();

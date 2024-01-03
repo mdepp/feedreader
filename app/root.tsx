@@ -10,7 +10,7 @@ import {
   getInitColorSchemeScript,
   unstable_useEnhancedEffect as useEnhancedEffect,
 } from "@mui/material";
-import type { LoaderArgs, V2_MetaFunction as MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -35,7 +35,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   return authenticator.isAuthenticated(request);
 };
 
