@@ -44,7 +44,7 @@ type UpdateFromDocumentParams = {
 };
 export async function updateFromDocument(
   em: EntityManager,
-  { document, url, userId, initial = false }: UpdateFromDocumentParams
+  { document, url, userId, initial = false }: UpdateFromDocumentParams,
 ) {
   const { parsedChannel, parsedItems } = await parseRSS(document);
 
@@ -64,7 +64,7 @@ export async function updateFromDocument(
       const item = await em.upsert(new Item(parsedItem.guid, channel, index));
       wrap(item).assign({ ...parsedItem, pubDate });
       return item;
-    })
+    }),
   );
   return { channel, items };
 }

@@ -77,8 +77,8 @@ export class DBService {
       em.find(
         Item,
         { channel: { userId: user.id } },
-        { orderBy: [{ pubDate: QueryOrder.DESC_NULLS_LAST }, { index: QueryOrder.ASC }], limit: 20 }
-      )
+        { orderBy: [{ pubDate: QueryOrder.DESC_NULLS_LAST }, { index: QueryOrder.ASC }], limit: 20 },
+      ),
     );
   }
 
@@ -90,7 +90,7 @@ export class DBService {
           const document = await fetchWithCache(em, channel.url);
           invariant(typeof document === "string", "Failed to fetch data");
           await updateFromDocument(em, { document, url: channel.url, userId: channel.userId });
-        })
+        }),
       );
       await em.commit();
     });

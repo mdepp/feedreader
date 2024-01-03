@@ -12,7 +12,7 @@ const auth0Strategy = new Auth0Strategy(
     clientSecret: process.env.AUTH0_CLIENT_SECRET!,
     domain: process.env.AUTH0_DOMAIN!,
   },
-  async ({ profile }) => profile
+  async ({ profile }) => profile,
 );
 
 authenticator.use(auth0Strategy);

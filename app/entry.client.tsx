@@ -16,6 +16,6 @@ startTransition(() => {
       <EmotionCacheProvider>
         <RemixBrowser />
       </EmotionCacheProvider>
-    </StrictMode>
+    </StrictMode>,
   );
 });
