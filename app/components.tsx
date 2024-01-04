@@ -1,7 +1,7 @@
-import { Button, FormControlLabel, styled, Switch } from "@mui/material";
+import { Button, styled } from "@mui/material";
 import type {} from "@mui/material/themeCssVarsAugmentation";
 import { Form, NavLink, Link as RouterLink } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { ChangeEventHandler, ReactNode, useEffect, useState } from "react";
 import type { Auth0Profile } from "remix-auth-auth0";
 
 export const ModeSwitcher = () => {
@@ -22,20 +22,36 @@ export const ModeSwitcher = () => {
   }
 
   return (
-    <FormControlLabel
+    <Switch
       data-theme-mode={mode}
-      label={mode === "light" ? "Light" : "Dark"}
-      control={
-        <Switch
-          checked={mode === "dark"}
-          onChange={(e, checked) => {
-            setMode(checked ? "dark" : "light");
-          }}
-        />
-      }
+      labelOn="Dark"
+      labelOff="Light"
+      checked={mode === "dark"}
+      onChange={(event) => setMode(event.target.checked ? "dark" : "light")}
     />
   );
 };
+
+type SwitchProps = {
+  labelOn: ReactNode;
+  labelOff: ReactNode;
+  checked?: boolean;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+};
+function Switch(props: SwitchProps) {
+  const { labelOn, labelOff, checked, onChange, ...rest } = props;
+  return (
+    <label className="switch" {...rest}>
+      <input className="switch__checkbox" type="checkbox" checked={checked} onChange={onChange} />
+      <span className="switch__track-container">
+        <span className="switch__track" />
+        <span className="switch__thumb" />
+      </span>
+      <span className="switch__label-on">{labelOn}</span>
+      <span className="switch__label-off">{labelOff}</span>
+    </label>
+  );
+}
 
 export const Footer = () => {
   return (
