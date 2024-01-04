@@ -1,5 +1,3 @@
-import { Button, styled } from "@mui/material";
-import type {} from "@mui/material/themeCssVarsAugmentation";
 import { Form, NavLink, Link as RouterLink } from "@remix-run/react";
 import { ChangeEventHandler, ReactNode, useEffect, useState } from "react";
 import type { Auth0Profile } from "remix-auth-auth0";
@@ -60,21 +58,6 @@ export const Footer = () => {
     </footer>
   );
 };
-
-const HeaderNavLink = styled(Button)({
-  color: "var(--mui-palette-text-secondary)",
-  display: "flex",
-  minHeight: "inherit",
-  borderRadius: 0,
-  "&.active": {
-    color: "var(--mui-palette-text-primary)",
-    textDecoration: "underline",
-  },
-  "&:hover": {
-    color: "var(--mui-palette-text-primary)",
-    background: "unset",
-  },
-}) as typeof Button;
 
 export const Header = ({ user }: { user: Auth0Profile | null }) => {
   return (
