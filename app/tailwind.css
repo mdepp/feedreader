@@ -134,6 +134,13 @@
     background: hsla(var(--color-hsl) / 0.2);
   }
 
+  .footer {
+    border-top: var(--border-divider);
+    display: grid;
+    place-content: end;
+    padding: var(--spacing);
+  }
+
   .switch {
     --switch-thumb-diameter: 20px;
     --switch-thumb-offset: 7px; /* r / sqrt(2) */

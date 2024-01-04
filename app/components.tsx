@@ -55,14 +55,7 @@ function Switch(props: SwitchProps) {
 
 export const Footer = () => {
   return (
-    <footer
-      style={{
-        background: "var(--mui-palette-background-default)",
-        borderTop: "1px solid var(--mui-palette-divider)",
-        display: "flex",
-        justifyContent: "end",
-      }}
-    >
+    <footer className="footer">
       <ModeSwitcher />
     </footer>
   );
