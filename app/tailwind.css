@@ -177,7 +177,6 @@
     border-radius: calc(0.5 * var(--switch-track-height));
     display: block;
     filter: brightness(50%);
-    grid-area: all;
     height: var(--switch-track-height);
     width: var(--switch-track-width);
   }
@@ -186,7 +185,6 @@
     background: currentColor;
     border-radius: 50%;
     display: block;
-    grid-area: all;
     height: var(--switch-thumb-diameter);
     left: var(--switch-thumb-position);
     position: absolute;
