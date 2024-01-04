@@ -4,13 +4,13 @@
 
 @layer base {
   :root {
-    --color-background: hsl(0 0 100%);
+    --color-background: hsl(0 0% 100%);
     --color-divider: hsl(220 13% 91%);
     --color-primary-hsl: 210 79% 46%;
     --text-primary-hsl: 0 0% 13%;
   }
   :root:has(:where([data-theme-mode="dark"])) {
-    --color-background: hsl(0 0 0%);
+    --color-background: hsl(0 0% 0%);
     --color-divider: hsl(220 13% 20%);
     --color-primary-hsl: 207 90% 77%;
     --text-primary-hsl: 0 0% 100%;
@@ -30,7 +30,7 @@
 
   /* XXX !important is used to override emotion; remove once emotion is gone */
   body {
-    background: var(-color-background) !important;
+    background: var(--color-background) !important;
     color: var(--text-primary) !important;
     transition:
       color var(--transition),

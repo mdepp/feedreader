@@ -1,12 +1,11 @@
 import { Button, FormControlLabel, styled, Switch } from "@mui/material";
-import { useColorScheme } from "@mui/material/styles";
 import type {} from "@mui/material/themeCssVarsAugmentation";
 import { Form, NavLink, Link as RouterLink } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import type { Auth0Profile } from "remix-auth-auth0";
 
 export const ModeSwitcher = () => {
-  const { mode, setMode } = useColorScheme();
+  const [mode, setMode] = useState("light");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

@@ -1,15 +1,7 @@
 import "reflect-metadata";
 
-import {
-  Button,
-  Container,
-  CssBaseline,
-  Experimental_CssVarsProvider as CssVarsProvider,
-  Stack,
-  Typography,
-  getInitColorSchemeScript,
-  unstable_useEnhancedEffect as useEnhancedEffect,
-} from "@mui/material";
+import { ThemeProvider } from "@emotion/react";
+import { Button, Container, Stack, Typography, unstable_useEnhancedEffect as useEnhancedEffect } from "@mui/material";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import {
   Links,
@@ -55,11 +47,7 @@ function Document({ children }: PropsWithChildren) {
         <Links />
       </head>
       <body style={{ height: "100vh" }}>
-        {getInitColorSchemeScript({})}
-        <CssVarsProvider theme={theme}>
-          <CssBaseline />
-          {children}
-        </CssVarsProvider>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
