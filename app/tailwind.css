@@ -3,17 +3,31 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  .vars-light {
     --color-background: hsl(0 0% 100%);
     --color-divider: hsl(220 13% 91%);
     --color-primary-hsl: 210 79% 46%;
     --text-primary-hsl: 0 0% 13%;
   }
-  :root:has(:where([data-theme-mode="dark"])) {
+  .vars-dark {
     --color-background: hsl(0 0% 0%);
     --color-divider: hsl(220 13% 20%);
     --color-primary-hsl: 207 90% 77%;
     --text-primary-hsl: 0 0% 100%;
+  }
+  :root {
+    @apply vars-light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      @apply vars-dark;
+    }
+  }
+  :root:has(:where([data-theme-mode="dark"])) {
+    @apply vars-dark;
+  }
+  :root:has(:where([data-theme-mode="light"])) {
+    @apply vars-light;
   }
   :root {
     --border-divider: 1px solid var(--color-divider);

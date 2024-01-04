@@ -5,11 +5,16 @@ import { useEffect, useState } from "react";
 import type { Auth0Profile } from "remix-auth-auth0";
 
 export const ModeSwitcher = () => {
-  const [mode, setMode] = useState("light");
+  const [mode, setMode] = useState("default");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      setMode("dark");
+    } else {
+      setMode("light");
+    }
   }, []);
 
   if (!mounted) {
