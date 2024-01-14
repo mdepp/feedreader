@@ -57,7 +57,7 @@ export class Item {
   description?: string;
   @Property({ type: "string", nullable: true })
   author?: string;
-  @Property({ type: "string", nullable: true })
+  @Property({ type: "string", nullable: true, length: 4096 })
   category?: string;
   @Property({ type: "string", nullable: true })
   comments?: string;
