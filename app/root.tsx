@@ -9,12 +9,13 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useNavigation,
   useRouteError,
 } from "@remix-run/react";
 import type { PropsWithChildren } from "react";
 import rootStylesheet from "~/styles/root.css";
 import sharedStylesheet from "~/styles/shared.css";
-import { Footer, Header } from "./components";
+import { Footer, Header, LinearProgress } from "./components";
 import { authenticator } from "./services/auth.server";
 
 export const meta: MetaFunction = () => {
@@ -53,12 +54,14 @@ function Document({ children }: PropsWithChildren) {
 
 export default function App() {
   const user = useLoaderData<typeof loader>();
+  const { state } = useNavigation();
 
   return (
     <Document>
       <div className="app-layout">
         <div className="app-layout__header">
           <Header user={user} />
+          <LinearProgress key={state} className={state === "idle" ? "hidden" : undefined} />
         </div>
         <main className="app-layout__main">
           <Outlet />

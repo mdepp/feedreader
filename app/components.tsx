@@ -104,3 +104,12 @@ export function TooltipContainer(props: { title: string; children: ReactNode }) 
     </div>
   );
 }
+
+export function LinearProgress(props: React.HTMLAttributes<HTMLDivElement>) {
+  const { className, ...rest } = props;
+  return (
+    <div role="progressbar" className={`linear-progress ${className}`} {...rest}>
+      <div className="linear-progress__bar" />
+    </div>
+  );
+}

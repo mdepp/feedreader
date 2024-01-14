@@ -8,3 +8,7 @@
   height: 1px;
   opacity: 0;
 }
+
+.hidden {
+  visibility: hidden;
+}

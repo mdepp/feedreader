@@ -40,6 +40,7 @@
 :root {
   --border-divider: 1px solid var(--color-divider);
   --border-radius: 5px;
+  --color-disabled: hsla(var(--color-primary-hsl) / 0.4);
   --color-primary: hsl(var(--color-primary-hsl));
   --content-width: 900px;
   --header-width: max(var(--content-width), 75vw);
