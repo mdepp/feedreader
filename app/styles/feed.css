@@ -1,0 +1,7 @@
+@layer routes {
+  .feed {
+    display: grid;
+    gap: calc(4 * var(--spacing));
+    grid-auto-flow: row;
+  }
+}

@@ -1,0 +1,21 @@
+@import "modern-normalize/modern-normalize.css";
+
+a {
+  text-decoration: none;
+  color: currentColor;
+}
+
+button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 0;
+}

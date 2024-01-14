@@ -1,13 +1,12 @@
-import { Add } from "@mui/icons-material";
-import { Fab } from "@mui/material";
 import { Link } from "@remix-run/react";
+import { PlusIcon } from "~/svgs";
 
 export default function Index() {
   return (
     <div>
-      <Fab color="primary" component={Link} to="/channels/new" sx={{ float: "right" }}>
-        <Add />
-      </Fab>
+      <Link className="button button--fab button--icon" to="/channels/new">
+        <PlusIcon aria-label="Add Channel" />
+      </Link>
     </div>
   );
 }

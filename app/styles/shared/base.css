@@ -1,0 +1,62 @@
+@define-mixin theme-light {
+  --box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  --color-background: hsl(0 0% 100%);
+  --color-divider: hsl(220 13% 91%);
+  --color-error: hsl(0, 65%, 80%);
+  --color-primary-hsl: 210 79% 46%;
+  --drop-shadow: 1px 6px 3px hsl(220 13% 91%);
+  --text-error: hsl(0 65% 15%);
+  --text-primary-hsl: 0 0% 13%;
+  color-scheme: light;
+}
+
+@define-mixin theme-dark {
+  --box-shadow: unset;
+  --color-background: hsl(0 0% 0%);
+  --color-divider: hsl(220 13% 20%);
+  --color-error: hsl(0 65% 15%);
+  --color-primary-hsl: 207 90% 77%;
+  --drop-shadow: 0px 0px 20px hsl(0, 0%, 10%);
+  --text-error: hsl(0, 65%, 80%);
+  --text-primary-hsl: 0 0% 100%;
+  color-scheme: dark;
+}
+
+:root {
+  @mixin theme-light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    @mixin theme-dark;
+  }
+}
+:root:has(:where([data-theme-mode="dark"])) {
+  @mixin theme-dark;
+}
+:root:has(:where([data-theme-mode="light"])) {
+  @mixin theme-light;
+}
+
+:root {
+  --border-divider: 1px solid var(--color-divider);
+  --border-radius: 5px;
+  --color-primary: hsl(var(--color-primary-hsl));
+  --content-width: 900px;
+  --header-width: max(var(--content-width), 75vw);
+  --spacing: 0.5rem;
+  --text-primary-inactive: hsla(var(--text-primary-hsl) / 0.65);
+  --text-primary: hsl(var(--text-primary-hsl));
+  --transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --weight-medium: 500;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition:
+    color var(--transition),
+    background-color var(--transition),
+    border-color var(--transition);
+  font-family: sans-serif;
+}

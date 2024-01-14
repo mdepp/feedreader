@@ -1,0 +1,39 @@
+@layer routes {
+  .app-layout {
+    container: app;
+    display: grid;
+    grid-template-rows: max-content 1fr max-content;
+    min-height: 100vh;
+  }
+
+  .app-layout__header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .app-layout__main {
+    justify-self: center;
+    max-width: var(--content-width);
+    padding: calc(4 * var(--spacing)) 0;
+    width: calc(100cqi - 2 * var(--spacing));
+  }
+
+  .app-layout__footer {
+    position: sticky;
+    bottom: 0;
+  }
+
+  .error-layout {
+    display: grid;
+    gap: var(--spacing);
+    justify-content: center;
+    position: relative;
+    top: 30vh;
+  }
+
+  .error-layout__header {
+    font-size: 3rem;
+    font-weight: 400;
+  }
+}

@@ -1,0 +1,31 @@
+@layer routes {
+  .channels {
+    display: grid;
+    gap: calc(2 * var(--spacing));
+  }
+
+  .channel-list__item {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+  }
+
+  :where(.channel-list__item) + .channel-list__item {
+    margin-top: calc(2 * var(--spacing));
+  }
+}
+
+@layer components {
+  .channel-list__item__title {
+    font-size: 1rem;
+  }
+
+  .channel-list__item__description {
+    color: hsla(var(--text-primary-hsl) / 0.6);
+    font-size: 0.875rem;
+  }
+
+  .channel-list__item__actions {
+    display: grid;
+    grid-auto-flow: column;
+  }
+}

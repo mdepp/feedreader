@@ -3,31 +3,41 @@
 @tailwind utilities;
 
 @layer base {
-  .vars-light {
+  .theme-light {
+    --box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     --color-background: hsl(0 0% 100%);
     --color-divider: hsl(220 13% 91%);
+    --color-error: hsl(0, 65%, 80%);
     --color-primary-hsl: 210 79% 46%;
+    --drop-shadow: 1px 6px 3px hsl(220 13% 91%);
+    --text-error: hsl(0 65% 15%);
     --text-primary-hsl: 0 0% 13%;
+    color-scheme: light;
   }
-  .vars-dark {
+  .theme-dark {
+    --box-shadow: unset;
     --color-background: hsl(0 0% 0%);
     --color-divider: hsl(220 13% 20%);
+    --color-error: hsl(0 65% 15%);
     --color-primary-hsl: 207 90% 77%;
+    --drop-shadow: 0px 0px 20px hsl(0, 0%, 10%);
+    --text-error: hsl(0, 65%, 80%);
     --text-primary-hsl: 0 0% 100%;
+    color-scheme: dark;
   }
   :root {
-    @apply vars-light;
+    @apply theme-light;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      @apply vars-dark;
+      @apply theme-dark;
     }
   }
   :root:has(:where([data-theme-mode="dark"])) {
-    @apply vars-dark;
+    @apply theme-dark;
   }
   :root:has(:where([data-theme-mode="light"])) {
-    @apply vars-light;
+    @apply theme-light;
   }
   :root {
     --border-divider: 1px solid var(--color-divider);
@@ -42,23 +52,21 @@
     --weight-medium: 500;
   }
 
-  /* XXX !important is used to override emotion; remove once emotion is gone */
   body {
-    background: var(--color-background) !important;
-    color: var(--text-primary) !important;
+    background: var(--color-background);
+    color: var(--text-primary);
+    min-height: 100vh;
     transition:
       color var(--transition),
       background-color var(--transition),
       border-color var(--transition);
-  }
-
-  h1 {
-    font-size: 2.125rem;
+    font-family: sans-serif;
   }
 }
 
 @layer components {
   .header {
+    background: var(--color-background);
     border-bottom: var(--border-divider);
     display: grid;
     grid-template-columns: minmax(min-content, var(--header-width));
@@ -74,6 +82,7 @@
   }
 
   .header__title {
+    font-size: 2.125rem;
     margin-right: calc(2 * var(--spacing));
   }
 
@@ -117,6 +126,7 @@
     border-radius: var(--border-radius);
     font-size: 0.875rem;
     padding: calc(0.75 * var(--spacing)) var(--spacing);
+    text-align: center;
     text-transform: uppercase;
     transition: all var(--transition);
     white-space: nowrap;
@@ -134,11 +144,57 @@
     background: hsla(var(--color-hsl) / 0.2);
   }
 
+  .button--contained {
+    background: hsl(var(--color-hsl));
+    color: var(--color-background);
+  }
+
+  .button--contained:hover {
+    background: hsla(var(--color-hsl) / 0.8);
+  }
+
+  .button--contained:active {
+    background: hsla(var(--color-hsl) / 0.6);
+  }
+
+  .button--icon {
+    display: inline grid;
+    gap: 0.1em;
+    grid-auto-flow: column;
+  }
+
+  .button--fab {
+    background: hsl(var(--color-hsl));
+    border-radius: 50%;
+    box-shadow: var(--box-shadow);
+    color: var(--color-background);
+    float: right;
+    padding: calc(2 * var(--spacing));
+  }
+
+  .button--fab:hover {
+    background: hsla(var(--color-hsl) / 0.8);
+  }
+
+  .button--fab:active {
+    background: hsla(var(--color-hsl) / 0.6);
+  }
+
+  .link {
+    color: hsl(var(--color-primary-hsl));
+    font-size: 0.875rem;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+  }
+
   .footer {
+    background: var(--color-background);
     border-top: var(--border-divider);
     display: grid;
-    place-content: end;
     padding: var(--spacing);
+    place-content: end;
   }
 
   .switch {
@@ -209,5 +265,122 @@
 
   :where(.switch__checkbox:checked) ~ .switch__label-on {
     display: block;
+  }
+
+  .nocontent {
+    font-size: 0.875rem;
+    font-style: italic;
+    text-align: center;
+  }
+
+  .card {
+    border-radius: var(--border-radius);
+    border: var(--border-divider);
+    padding: calc(2 * var(--spacing));
+    background: linear-gradient(45deg, hsla(0 0% 100% / 0.1), hsla(0 0% 100% / 0.05));
+  }
+
+  .card__title {
+    font-size: 1.5rem;
+  }
+
+  .card__content {
+    padding: var(--spacing) 0;
+  }
+
+  .card__content--overflow {
+    overflow: auto;
+  }
+
+  .card__content--stack {
+    display: grid;
+    gap: var(--spacing);
+  }
+
+  .card__actions {
+    display: grid;
+    gap: var(--spacing);
+    grid-auto-flow: column;
+    place-content: start;
+  }
+
+  .tooltip {
+    --tail-length: 10px;
+    --tail-offset: 5px;
+    --title-delay: 1s;
+    --title-padding: var(--spacing);
+    position: relative;
+  }
+
+  .tooltip__shadow-container {
+    filter: drop-shadow(var(--drop-shadow));
+  }
+
+  .tooltip__title {
+    background: var(--color-background);
+    color: hsla(var(--text-primary-hsl) / 0.6);
+    height: 0;
+    left: 50%;
+    line-height: 1em;
+    opacity: 0;
+    padding: 0;
+    position: absolute;
+    top: calc(-1 * var(--tail-offset));
+    transform: translate(-50%, -100%);
+    transition: all var(--transition) var(--title-delay);
+    visibility: hidden;
+    width: max-content;
+
+    clip-path: polygon(
+      0% 0%,
+      100% 0%,
+      100% calc(100% - var(--tail-length)),
+      calc(50% + var(--tail-length)) calc(100% - var(--tail-length)),
+      50% 100%,
+      calc(50% - 10px) calc(100% - var(--tail-length)),
+      0% calc(100% - var(--tail-length))
+    );
+  }
+
+  :where(.tooltip:hover, .tooltip:focus-within) .tooltip__title {
+    height: calc(1em + var(--tail-length) + 2 * var(--title-padding));
+    opacity: 1;
+    padding: var(--title-padding) var(--title-padding) calc(var(--tail-length) + var(--title-padding))
+      var(--title-padding);
+    visibility: visible;
+  }
+
+  .textinput {
+    background: transparent;
+    border-radius: var(--border-radius);
+    border: var(--border-divider);
+    padding: var(--spacing);
+    width: 100%;
+  }
+
+  .textinput:focus-visible,
+  .textinput:focus {
+    border: 1px solid var(--color-primary);
+    outline: 0;
+  }
+
+  .textinput:user-invalid {
+    border: 1px solid var(--color-error);
+  }
+
+  .alert {
+    border-radius: var(--border-radius);
+    padding: var(--spacing);
+  }
+
+  .alert--error {
+    color: var(--text-error);
+    background: var(--color-error);
+  }
+}
+
+@layer utilities {
+  .contents {
+    display: contents;
   }
 }

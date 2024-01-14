@@ -1,5 +1,5 @@
 import { Form, NavLink, Link as RouterLink } from "@remix-run/react";
-import { ChangeEventHandler, ReactNode, useEffect, useState } from "react";
+import { ChangeEventHandler, ReactNode, useEffect, useId, useState } from "react";
 import type { Auth0Profile } from "remix-auth-auth0";
 
 export const ModeSwitcher = () => {
@@ -85,3 +85,20 @@ export const Header = ({ user }: { user: Auth0Profile | null }) => {
     </header>
   );
 };
+
+export function TooltipContainer(props: { title: string; children: ReactNode }) {
+  const id = useId();
+  const { title, children } = props;
+  return (
+    <div className="tooltip">
+      <div className="tooltip__shadow-container">
+        <span className="tooltip__title" role="tooltip" id={id}>
+          {title}
+        </span>
+      </div>
+      <div className="tooltip__content" aria-describedby={id}>
+        {children}
+      </div>
+    </div>
+  );
+}

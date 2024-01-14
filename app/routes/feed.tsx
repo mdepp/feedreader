@@ -1,14 +1,16 @@
-import { OpenInNew } from "@mui/icons-material";
-import { Button, Card, CardActions, CardContent, CardHeader, Link, Stack, Typography } from "@mui/material";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Link as RouterLink, useLoaderData } from "@remix-run/react";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import sanitizeHtml from "sanitize-html";
 import { authenticator } from "~/services/auth.server";
 import database from "~/services/database.server";
+import stylesheet from "~/styles/feed.css";
+import { ExternalLinkIcon } from "~/svgs";
 
 dayjs.extend(relativeTime);
+
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheet }];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/login" });
@@ -26,56 +28,54 @@ function formatHostname(url?: string) {
   }
 }
 
-function formatRelative(text?: string) {
-  if (text === undefined) return undefined;
+function parseDate(text: string) {
   const date = dayjs(text);
-  if (!date.isValid()) return undefined;
-  return date.from(dayjs());
+  return date.isValid() ? date : null;
+}
+
+function RelativeTime(props: { text: string | null }) {
+  const { text } = props;
+  const date = text !== null ? parseDate(text) : null;
+  const reltime = date !== null ? date.from(dayjs()) : "never";
+  return <time dateTime={date?.toISOString()}>{reltime}</time>;
 }
 
 export default function Feed() {
   const items = useLoaderData<typeof loader>();
 
   return (
-    <Stack spacing={4}>
+    <div className="feed">
       {items.map((item) => (
-        <Card key={item.guid}>
-          <CardHeader
-            title={item.title}
-            subheader={
-              <>
-                {formatHostname(item.link)} / {formatRelative(item.pubDate) ?? "never"}
-              </>
-            }
+        <article key={item.guid} className="card">
+          <h2 className="card__title">{item.title}</h2>
+          <div role="doc-subtitle">
+            {formatHostname(item.link)} / <RelativeTime text={item.pubDate ?? null} />
+          </div>
+          <div
+            className="card__content card__content--overflow"
+            dangerouslySetInnerHTML={{
+              __html: sanitizeHtml(item.description ?? "", {
+                allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]).filter((tag) => tag !== "a"),
+              }),
+            }}
           />
-          <CardContent>
-            <div
-              style={{ overflow: "auto" }}
-              dangerouslySetInnerHTML={{
-                __html: sanitizeHtml(item.description ?? "", {
-                  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]).filter((tag) => tag !== "a"),
-                }),
-              }}
-            />
-          </CardContent>
-          <CardActions>
-            <Button component="a" startIcon={<OpenInNew />} href={item.link} target="_blank" rel="noopener noreferrer">
+          <div className="card__actions">
+            <a className="button button--text button--icon" href={item.link} target="_blank" rel="noopener noreferrer">
+              <ExternalLinkIcon aria-label="[External]" />
               Visit Website
-            </Button>
-          </CardActions>
-        </Card>
+            </a>
+          </div>
+        </article>
       ))}
       {items.length === 0 && (
-        <Typography variant="body2" textAlign="center">
-          <em>
-            No content here yet. To add a channel, click{" "}
-            <Link component={RouterLink} to="/channels/new">
-              here
-            </Link>
-            .
-          </em>
-        </Typography>
+        <p className="nocontent">
+          No content here yet. To add a channel, click{" "}
+          <Link className="link" to="/channels/new">
+            here
+          </Link>
+          .
+        </p>
       )}
-    </Stack>
+    </div>
   );
 }
