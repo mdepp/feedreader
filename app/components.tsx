@@ -68,12 +68,14 @@ export const Header = ({ user }: { user: Auth0Profile | null }) => {
         </h1>
         {user !== null && (
           <>
-            <NavLink className="header__link" to="/feed">
-              Feed
-            </NavLink>
-            <NavLink className="header__link" to="/channels">
-              Channels
-            </NavLink>
+            <nav className="header__nav" aria-label="Main Menu">
+              <NavLink className="header__link" to="/feed">
+                Feed
+              </NavLink>
+              <NavLink className="header__link" to="/channels">
+                Channels
+              </NavLink>
+            </nav>
             <Form className="header__logout" action="/auth/logout" method="post">
               <button className="button button--text" type="submit">
                 Log out

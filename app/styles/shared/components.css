@@ -19,6 +19,11 @@
   margin-right: calc(2 * var(--spacing));
 }
 
+.header__nav {
+  align-items: stretch;
+  display: flex;
+}
+
 .header__link {
   align-items: center;
   color: var(--text-primary-inactive);
