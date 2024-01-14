@@ -1,11 +1,26 @@
 import type { EntityManager } from "@mikro-orm/core";
 import { wrap } from "@mikro-orm/core";
+import invariant from "tiny-invariant";
 import { Channel, HTTPCache, Item } from "~/models";
-import { parseRSS } from "./parser.server";
+import { guessDocumentType, parseHtml, parseRSS } from "./parser.server";
 
 function parseDate(text: string | null) {
   if (text === null) return text;
   return new Date(text);
+}
+
+export async function fetchRssWithCache(em: EntityManager, url: string, init?: RequestInit) {
+  let document = await fetchWithCache(em, url);
+  if (document === undefined) return document;
+  if (guessDocumentType(document) === "html") {
+    const { feeds } = parseHtml(document);
+    invariant(feeds.length > 0, "Document has no feeds");
+    // XXX For now just use the first feed
+    invariant(typeof feeds[0].href === "string", "Feed must have href");
+    const feedUrl = new URL(feeds[0].href, url).href;
+    document = await fetchWithCache(em, feedUrl);
+  }
+  return document;
 }
 
 export async function fetchWithCache(em: EntityManager, url: string, init?: RequestInit) {
@@ -48,7 +63,10 @@ export async function updateFromDocument(
 ) {
   const { parsedChannel, parsedItems } = await parseRSS(document);
 
+  console.log(url, userId);
   const channel = await em.upsert(new Channel(url, userId));
+  console.log(document);
+  console.log(parsedChannel);
   wrap(channel).assign(parsedChannel);
 
   const existingItems = await em.find(Item, { guid: parsedItems.map((item) => item.guid) });
