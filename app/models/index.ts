@@ -24,7 +24,7 @@ export class Channel {
   id!: number;
   @Property({ type: "string" })
   url!: string;
-  @Property({ type: "string", nullable: true })
+  @Property({ type: "string", nullable: true, length: 4096 })
   title?: string;
   @Property({ type: "string", nullable: true })
   link?: string;
@@ -49,7 +49,7 @@ export class Channel {
 export class Item {
   @PrimaryKey({ type: "string" })
   guid!: string;
-  @Property({ type: "string", nullable: true })
+  @Property({ type: "string", nullable: true, length: 4096 })
   title?: string;
   @Property({ type: "string", nullable: true })
   link?: string;
