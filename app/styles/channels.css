@@ -1,6 +1,7 @@
 @layer routes {
   .channels {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: calc(2 * var(--spacing));
   }
 
