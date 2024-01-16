@@ -46,7 +46,11 @@ export default function New() {
             URL
           </label>
           <input className="textinput" type="url" name="url" placeholder="URL*" required id={inputId} />
-          {Boolean(errors?.message) && <div className="alert alert--error">{errors?.message}</div>}
+          {Boolean(errors?.message) && (
+            <div role="alert" className="alert alert--error">
+              {errors?.message}
+            </div>
+          )}
         </div>
         <div className="card__actions">
           <button className="button button--contained" type="submit" disabled={isSubmitting}>

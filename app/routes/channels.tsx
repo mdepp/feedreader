@@ -75,7 +75,11 @@ export default function Channels() {
     <div className="channels">
       <div className="card">
         <div className="card__content">
-          {typeof errorMessage === "string" && <div className="alert alert--error">{errorMessage}</div>}
+          {typeof errorMessage === "string" && (
+            <div role="alert" className="alert alert--error">
+              {errorMessage}
+            </div>
+          )}
           <ChannelsList channels={channels} />
           {channels.length === 0 && (
             <p className="nocontent">
