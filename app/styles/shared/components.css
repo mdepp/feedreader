@@ -1,5 +1,6 @@
 .header {
-  background: var(--color-background);
+  backdrop-filter: var(--glass-blur);
+  background: var(--glass-background);
   border-bottom: var(--border-divider);
   display: grid;
   grid-template-columns: minmax(min-content, var(--header-width));
@@ -65,7 +66,8 @@
 }
 
 .footer {
-  background: var(--color-background);
+  backdrop-filter: var(--glass-blur);
+  background: var(--glass-background);
   border-top: var(--border-divider);
   display: grid;
   padding: var(--spacing);
