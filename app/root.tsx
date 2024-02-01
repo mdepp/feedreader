@@ -41,8 +41,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   console.log("formData", formData);
   cookie.themeMode = formData.get("themeMode") === "dark" ? "dark" : "light";
-  const href = String(formData.get("redirect") ?? "/");
-  return redirect(href, { headers: { "Set-Cookie": await userPrefs.serialize(cookie) } });
+  const headers = { "Set-Cookie": await userPrefs.serialize(cookie) };
+  const href = formData.get("redirect");
+  if (href) return redirect(String(href), { headers });
+  return new Response(null, { headers });
 };
 
 export const links: LinksFunction = () => [
