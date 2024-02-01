@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -8,6 +8,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  json,
+  redirect,
   useLoaderData,
   useNavigation,
   useRouteError,
@@ -16,6 +18,7 @@ import type { PropsWithChildren } from "react";
 import rootStylesheet from "~/styles/root.css";
 import sharedStylesheet from "~/styles/shared.css";
 import { Footer, Header, LinearProgress } from "./components";
+import { userPrefs } from "./cookies.server";
 import { authenticator } from "./services/auth.server";
 
 export const meta: MetaFunction = () => {
@@ -27,7 +30,19 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  return authenticator.isAuthenticated(request);
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await userPrefs.parse(cookieHeader)) ?? {};
+  return json({ user: await authenticator.isAuthenticated(request), themeMode: cookie.themeMode ?? null });
+};
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await userPrefs.parse(cookieHeader)) ?? {};
+  const formData = await request.formData();
+  console.log("formData", formData);
+  cookie.themeMode = formData.get("themeMode") === "dark" ? "dark" : "light";
+  const href = String(formData.get("redirect") ?? "/");
+  return redirect(href, { headers: { "Set-Cookie": await userPrefs.serialize(cookie) } });
 };
 
 export const links: LinksFunction = () => [
@@ -47,13 +62,16 @@ function Document({ children }: PropsWithChildren) {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+        <noscript>
+          <div className="no-script none" />
+        </noscript>
       </body>
     </html>
   );
 }
 
 export default function App() {
-  const user = useLoaderData<typeof loader>();
+  const { user } = useLoaderData<typeof loader>();
   const { state } = useNavigation();
 
   return (

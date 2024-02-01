@@ -74,6 +74,21 @@
   place-content: end;
 }
 
+.mode-switcher {
+  display: grid;
+  gap: var(--spacing);
+  grid-auto-flow: column;
+  place-items: center end;
+}
+
+.mode-switcher__submit {
+  display: none;
+}
+
+:where(:root:has(.no-script)) .mode-switcher__submit {
+  display: unset;
+}
+
 .button {
   --color-hsl: var(--color-primary-hsl);
   border-radius: var(--border-radius);

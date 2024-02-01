@@ -30,10 +30,17 @@
     @mixin theme-dark;
   }
 }
-:root:has(:where([data-theme-mode="dark"])) {
+:root:has(:where([data-theme-mode-server="dark"])) {
   @mixin theme-dark;
 }
-:root:has(:where([data-theme-mode="light"])) {
+:root:has(:where([data-theme-mode-server="light"])) {
+  @mixin theme-light;
+}
+
+:root:has(:where([data-theme-mode-client="dark"])) {
+  @mixin theme-dark;
+}
+:root:has(:where([data-theme-mode-client="light"])) {
   @mixin theme-light;
 }
 

@@ -1,46 +1,94 @@
-import { Form, NavLink, Link as RouterLink } from "@remix-run/react";
-import { ChangeEventHandler, ReactNode, useEffect, useId, useState } from "react";
+import { Form, NavLink, Link as RouterLink, useFetcher, useHref, useRouteLoaderData } from "@remix-run/react";
+import type { ChangeEventHandler, ReactNode } from "react";
+import { useId, useState } from "react";
 import type { Auth0Profile } from "remix-auth-auth0";
+import type { loader } from "./root";
 
 export const ModeSwitcher = () => {
-  const [mode, setMode] = useState("default");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setMode("dark");
-    } else {
-      setMode("light");
-    }
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
-
   return (
-    <Switch
-      data-theme-mode={mode}
-      labelOn="Dark"
-      labelOff="Light"
-      checked={mode === "dark"}
-      onChange={(event) => setMode(event.target.checked ? "dark" : "light")}
-    />
+    <>
+      <div className="client-only">
+        <ModeSwitcherClient />
+      </div>
+      <div className="server-only">
+        <ModeSwitcherServer />
+      </div>
+    </>
   );
 };
 
+function ModeSwitcherServer() {
+  const { themeMode } = useRouteLoaderData<typeof loader>("root") ?? {};
+  const href = useHref(".");
+  return (
+    <Form className="mode-switcher" action="/" method="POST">
+      <Switch
+        data-theme-mode-server={themeMode}
+        name="themeMode"
+        value="dark"
+        labelOn="Dark"
+        labelOff="Light"
+        defaultChecked={themeMode === "dark"}
+      />
+      <input type="hidden" name="redirect" value={href} />
+      <button className="mode-switcher__submit button button--text" type="submit">
+        Update
+      </button>
+    </Form>
+  );
+}
+
+function ModeSwitcherClient() {
+  const preferredThemeMode = usePreferredThemeMode();
+  const { themeMode: defaultThemeMode } = useRouteLoaderData<typeof loader>("root") ?? {};
+  const fetcher = useFetcher();
+  const [themeMode, setThemeMode] = useState(defaultThemeMode);
+
+  return (
+    <Switch
+      data-theme-mode-client={themeMode}
+      labelOn="Dark"
+      labelOff="Light"
+      checked={(themeMode ?? preferredThemeMode) === "dark"}
+      onChange={(e) => {
+        const newMode = e.target.checked ? "dark" : "light";
+        setThemeMode(newMode);
+        fetcher.submit({ themeMode: newMode }, { action: "/", method: "POST" });
+      }}
+    />
+  );
+}
+
+function usePreferredThemeMode() {
+  if ("window" in globalThis) {
+    const mql = window.matchMedia("(prefers-color-scheme: dark)");
+    return mql.matches ? "dark" : "light";
+  }
+  return null;
+}
+
 type SwitchProps = {
+  name?: string;
+  value?: string;
   labelOn: ReactNode;
   labelOff: ReactNode;
+  defaultChecked?: boolean;
   checked?: boolean;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 function Switch(props: SwitchProps) {
-  const { labelOn, labelOff, checked, onChange, ...rest } = props;
+  const { name, value, labelOn, labelOff, defaultChecked, checked, onChange, ...rest } = props;
   return (
     <label className="switch" {...rest}>
-      <input className="switch__checkbox" type="checkbox" checked={checked} onChange={onChange} />
+      <input
+        className="switch__checkbox"
+        type="checkbox"
+        name={name}
+        value={value}
+        defaultChecked={defaultChecked}
+        checked={checked}
+        onChange={onChange}
+      />
       <span className="switch__track-container">
         <span className="switch__track" />
         <span className="switch__thumb" />

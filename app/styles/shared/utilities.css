@@ -12,3 +12,15 @@
 .hidden {
   visibility: hidden;
 }
+
+.none {
+  display: none;
+}
+
+:where(:root:not(:has(.no-script))) .server-only {
+  display: none;
+}
+
+:where(:root:has(.no-script)) .client-only {
+  display: none;
+}
