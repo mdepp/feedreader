@@ -30,17 +30,17 @@
     @mixin theme-dark;
   }
 }
-:root:has(:where([data-theme-mode-server="dark"])) {
+:root:where([data-theme-mode-server="dark"]:not([data-theme-mode-client="system"])) {
   @mixin theme-dark;
 }
-:root:has(:where([data-theme-mode-server="light"])) {
+:root:where([data-theme-mode-server="light"]:not([data-theme-mode-client="system"])) {
   @mixin theme-light;
 }
 
-:root:has(:where([data-theme-mode-client="dark"])) {
+:root:where([data-theme-mode-client="dark"]) {
   @mixin theme-dark;
 }
-:root:has(:where([data-theme-mode-client="light"])) {
+:root:where([data-theme-mode-client="light"]) {
   @mixin theme-light;
 }
 

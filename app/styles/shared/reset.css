@@ -5,3 +5,11 @@ button {
   border: none;
   cursor: pointer;
 }
+
+select {
+  appearance: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 0;
+}

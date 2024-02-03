@@ -20,6 +20,8 @@ import sharedStylesheet from "~/styles/shared.css";
 import { Footer, Header, LinearProgress } from "./components";
 import { userPrefs } from "./cookies.server";
 import { authenticator } from "./services/auth.server";
+import type { ThemeMode } from "./types";
+import { parseThemeMode } from "./types";
 
 export const meta: MetaFunction = () => {
   return [
@@ -32,15 +34,14 @@ export const meta: MetaFunction = () => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await userPrefs.parse(cookieHeader)) ?? {};
-  return json({ user: await authenticator.isAuthenticated(request), themeMode: cookie.themeMode ?? null });
+  return json({ user: await authenticator.isAuthenticated(request), themeMode: parseThemeMode(cookie.themeMode) });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await userPrefs.parse(cookieHeader)) ?? {};
   const formData = await request.formData();
-  console.log("formData", formData);
-  cookie.themeMode = formData.get("themeMode") === "dark" ? "dark" : "light";
+  cookie.themeMode = parseThemeMode(String(formData.get("themeMode")));
   const headers = { "Set-Cookie": await userPrefs.serialize(cookie) };
   const href = formData.get("redirect");
   if (href) return redirect(String(href), { headers });
@@ -52,9 +53,9 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: rootStylesheet },
 ];
 
-function Document({ children }: PropsWithChildren) {
+function Document({ children, themeMode }: PropsWithChildren<{ themeMode?: ThemeMode }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme-mode-server={themeMode}>
       <head>
         <Meta />
         <Links />
@@ -73,11 +74,11 @@ function Document({ children }: PropsWithChildren) {
 }
 
 export default function App() {
-  const { user } = useLoaderData<typeof loader>();
+  const { user, themeMode } = useLoaderData<typeof loader>();
   const { state } = useNavigation();
 
   return (
-    <Document>
+    <Document themeMode={themeMode}>
       <div className="app-layout">
         <div className="app-layout__header">
           <Header user={user} />

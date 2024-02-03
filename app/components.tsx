@@ -1,102 +1,59 @@
 import { Form, NavLink, Link as RouterLink, useFetcher, useHref, useRouteLoaderData } from "@remix-run/react";
-import type { ChangeEventHandler, ReactNode } from "react";
-import { useId, useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useId, useState } from "react";
 import type { Auth0Profile } from "remix-auth-auth0";
 import type { loader } from "./root";
+import { ChevronDownIcon } from "./svgs";
+import { parseThemeMode } from "./types";
 
-export const ModeSwitcher = () => {
-  return (
-    <>
-      <div className="client-only">
-        <ModeSwitcherClient />
-      </div>
-      <div className="server-only">
-        <ModeSwitcherServer />
-      </div>
-    </>
-  );
-};
-
-function ModeSwitcherServer() {
-  const { themeMode } = useRouteLoaderData<typeof loader>("root") ?? {};
+function ModeSwitcher() {
+  const { themeMode: serverMode = "system" } = useRouteLoaderData<typeof loader>("root") ?? {};
+  const fetcher = useFetcher();
   const href = useHref(".");
+
+  const [clientMode, setClientMode] = useState(serverMode);
+  useRootDataAttribute("data-theme-mode-client", clientMode);
+
   return (
-    <Form className="mode-switcher" action="/" method="POST">
-      <Switch
-        data-theme-mode-server={themeMode}
-        name="themeMode"
-        value="dark"
-        labelOn="Dark"
-        labelOff="Light"
-        defaultChecked={themeMode === "dark"}
-      />
+    <fetcher.Form className="mode-switcher" action="/" method="POST">
+      <div className="mode-switcher__select-container">
+        <select
+          className="mode-switcher__select"
+          name="themeMode"
+          onChange={(e) => {
+            fetcher.submit(e.currentTarget.form);
+            setClientMode(parseThemeMode(e.currentTarget.value));
+          }}
+          defaultValue={serverMode}
+        >
+          <option className="mode-switcher__select-option" value="light">
+            Light
+          </option>
+          <option className="mode-switcher__select-option" value="dark">
+            Dark
+          </option>
+          <option className="mode-switcher__select-option" value="system">
+            System
+          </option>
+        </select>
+        <div className="mode-switcher__select-icon-container">
+          <ChevronDownIcon className="mode-switcher__select-icon" />
+        </div>
+      </div>
       <input type="hidden" name="redirect" value={href} />
       <button className="mode-switcher__submit button button--text" type="submit">
         Update
       </button>
-    </Form>
+    </fetcher.Form>
   );
 }
 
-function ModeSwitcherClient() {
-  const preferredThemeMode = usePreferredThemeMode();
-  const { themeMode: defaultThemeMode } = useRouteLoaderData<typeof loader>("root") ?? {};
-  const fetcher = useFetcher();
-  const [themeMode, setThemeMode] = useState(defaultThemeMode);
-
-  return (
-    <Switch
-      data-theme-mode-client={themeMode}
-      labelOn="Dark"
-      labelOff="Light"
-      checked={(themeMode ?? preferredThemeMode) === "dark"}
-      onChange={(e) => {
-        const newMode = e.target.checked ? "dark" : "light";
-        setThemeMode(newMode);
-        fetcher.submit({ themeMode: newMode }, { action: "/", method: "POST" });
-      }}
-    />
-  );
-}
-
-function usePreferredThemeMode() {
-  if ("window" in globalThis) {
-    const mql = window.matchMedia("(prefers-color-scheme: dark)");
-    return mql.matches ? "dark" : "light";
-  }
-  return null;
-}
-
-type SwitchProps = {
-  name?: string;
-  value?: string;
-  labelOn: ReactNode;
-  labelOff: ReactNode;
-  defaultChecked?: boolean;
-  checked?: boolean;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
-};
-function Switch(props: SwitchProps) {
-  const { name, value, labelOn, labelOff, defaultChecked, checked, onChange, ...rest } = props;
-  return (
-    <label className="switch" {...rest}>
-      <input
-        className="switch__checkbox"
-        type="checkbox"
-        name={name}
-        value={value}
-        defaultChecked={defaultChecked}
-        checked={checked}
-        onChange={onChange}
-      />
-      <span className="switch__track-container">
-        <span className="switch__track" />
-        <span className="switch__thumb" />
-      </span>
-      <span className="switch__label-on">{labelOn}</span>
-      <span className="switch__label-off">{labelOff}</span>
-    </label>
-  );
+function useRootDataAttribute(attribute: string, value: string) {
+  useEffect(() => {
+    const html = document.getElementsByTagName("html")[0];
+    html.setAttribute(attribute, value);
+    return () => html.removeAttribute(attribute);
+  }, [attribute, value]);
 }
 
 export const Footer = () => {
