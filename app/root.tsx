@@ -18,6 +18,7 @@ import type { PropsWithChildren } from "react";
 import rootStylesheet from "~/styles/root.css";
 import sharedStylesheet from "~/styles/shared.css";
 import { Footer, Header, LinearProgress } from "./components";
+import { useNonce } from "./context";
 import { userPrefs } from "./cookies.server";
 import { authenticator } from "./services/auth.server";
 import type { ThemeMode } from "./types";
@@ -54,6 +55,7 @@ export const links: LinksFunction = () => [
 ];
 
 function Document({ children, themeMode }: PropsWithChildren<{ themeMode?: ThemeMode }>) {
+  const nonce = useNonce();
   return (
     <html lang="en" data-theme-mode-server={themeMode}>
       <head>
@@ -62,9 +64,9 @@ function Document({ children, themeMode }: PropsWithChildren<{ themeMode?: Theme
       </head>
       <body>
         {children}
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
+        <LiveReload nonce={nonce} />
         <noscript>
           <div className="no-script none" />
         </noscript>
