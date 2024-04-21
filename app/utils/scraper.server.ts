@@ -1,5 +1,5 @@
-import type { EntityManager } from "@mikro-orm/core";
-import { wrap } from "@mikro-orm/core";
+import type { EntityManager } from "@mikro-orm/postgresql";
+import { wrap } from "@mikro-orm/postgresql";
 import invariant from "tiny-invariant";
 import { Channel, HTTPCache, Item } from "~/models";
 import { guessDocumentType, parseHtml, parseRSS } from "./parser.server";
@@ -11,7 +11,7 @@ function parseDate(text: string | null) {
 
 export async function fetchRssWithCache(em: EntityManager, url: string, init?: RequestInit) {
   let document = await fetchWithCache(em, url);
-  if (document === undefined) return document;
+  if (document === null) return document;
   if (guessDocumentType(document) === "html") {
     const { feeds } = parseHtml(document);
     invariant(feeds.length > 0, "Document has no feeds");
@@ -28,18 +28,18 @@ export async function fetchWithCache(em: EntityManager, url: string, init?: Requ
   const headers = new Headers(init?.headers);
 
   const cache = await cacheRepository.upsert({ url });
-  if (cache?.etag !== undefined) {
+  if (cache.etag !== null) {
     headers.set("If-None-Match", cache.etag);
   }
-  if (cache?.last_modified !== undefined) {
+  if (cache.last_modified !== null) {
     headers.set("If-Modified-Since", cache.last_modified.toUTCString());
   }
 
   const response = await fetch(url, { ...init, headers });
 
   if (response.status === 304 || response.status === 200) {
-    cache.etag = response.headers.get("ETag") ?? undefined;
-    cache.last_modified = parseDate(response.headers.get("Last-Modified")) ?? undefined;
+    cache.etag = response.headers.get("ETag");
+    cache.last_modified = parseDate(response.headers.get("Last-Modified"));
   }
   if (response.status === 200) {
     cache.text = await response.text();

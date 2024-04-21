@@ -45,7 +45,7 @@ function ChannelsList(props: { channels: SerializeFrom<typeof loader> }) {
             <TooltipContainer title="Visit Website">
               <a
                 className="button button--text button--icon"
-                href={channel.link}
+                href={channel.link ?? undefined}
                 target="_blank"
                 rel="noopener noreferrer"
               >

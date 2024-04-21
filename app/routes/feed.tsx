@@ -49,7 +49,7 @@ export default function Feed() {
         <article key={item.guid} className="card">
           <h2 className="card__title">{item.title}</h2>
           <div role="doc-subtitle">
-            {formatHostname(item.link)} / <RelativeTime text={item.pubDate ?? null} />
+            {formatHostname(item.link ?? undefined)} / <RelativeTime text={item.pubDate ?? null} />
           </div>
           <div
             className="card__content card__content--overflow"
@@ -60,7 +60,12 @@ export default function Feed() {
             }}
           />
           <div className="card__actions">
-            <a className="button button--text button--icon" href={item.link} target="_blank" rel="noopener noreferrer">
+            <a
+              className="button button--text button--icon"
+              href={item.link ?? undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <ExternalLinkIcon aria-label="[External]" />
               Visit Website
             </a>

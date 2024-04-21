@@ -1,6 +1,5 @@
-import { QueryOrder, ReflectMetadataProvider } from "@mikro-orm/core";
 import type { EntityManager } from "@mikro-orm/postgresql";
-import { MikroORM } from "@mikro-orm/postgresql";
+import { MikroORM, PostgreSqlDriver, QueryOrder, ReflectMetadataProvider } from "@mikro-orm/postgresql";
 import type { Auth0Profile } from "remix-auth-auth0";
 import invariant from "tiny-invariant";
 import { Channel, HTTPCache, Item } from "~/models";
@@ -15,7 +14,7 @@ export class DBService {
       metadataProvider: ReflectMetadataProvider,
       entities: [HTTPCache, Channel, Item],
       clientUrl: getConnectionUrl(),
-      type: "postgresql",
+      driver: PostgreSqlDriver,
       debug: process.env.NODE_ENV === "development",
       migrations: { path: "./migrations" },
     });

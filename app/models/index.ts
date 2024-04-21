@@ -1,15 +1,15 @@
-import { Collection, Entity, Index, ManyToOne, OneToMany, PrimaryKey, Property, Unique } from "@mikro-orm/core";
+import { Collection, Entity, Index, ManyToOne, OneToMany, PrimaryKey, Property, Unique } from "@mikro-orm/postgresql";
 
 @Entity()
 export class HTTPCache {
   @PrimaryKey({ type: "string" })
   url!: string;
   @Property({ type: "string", nullable: true })
-  etag?: string;
+  etag: string | null = null;
   @Property({ type: "datetime", nullable: true })
-  last_modified?: Date;
+  last_modified: Date | null = null;
   @Property({ type: "text", nullable: true })
-  text?: string;
+  text: string | null = null;
 
   constructor(url: string) {
     this.url = url;
@@ -25,13 +25,13 @@ export class Channel {
   @Property({ type: "string" })
   url!: string;
   @Property({ type: "string", nullable: true, length: 4096 })
-  title?: string;
+  title: string | null = null;
   @Property({ type: "string", nullable: true })
-  link?: string;
+  link: string | null = null;
   @Property({ type: "string", nullable: true, length: 4096 })
-  description?: string;
+  description: string | null = null;
   @Property({ type: "datetime", nullable: true })
-  pubDate?: Date;
+  pubDate: Date | null = null;
 
   @OneToMany(() => Item, (item) => item.channel)
   items = new Collection<Item>(this);
@@ -50,21 +50,21 @@ export class Item {
   @PrimaryKey({ type: "string" })
   guid!: string;
   @Property({ type: "string", nullable: true, length: 4096 })
-  title?: string;
+  title: string | null = null;
   @Property({ type: "string", nullable: true })
-  link?: string;
+  link: string | null = null;
   @Property({ type: "string", nullable: true, length: 4096 })
-  description?: string;
+  description: string | null = null;
   @Property({ type: "string", nullable: true })
-  author?: string;
+  author: string | null = null;
   @Property({ type: "string", nullable: true, length: 4096 })
-  category?: string;
+  category: string | null = null;
   @Property({ type: "string", nullable: true })
-  comments?: string;
+  comments: string | null = null;
   @Property({ type: "string", nullable: true })
-  enclosure?: string;
+  enclosure: string | null = null;
   @Property({ type: "datetime", nullable: true })
-  pubDate?: Date;
+  pubDate: Date | null = null;
   // Used to maintain sort order of items with no pubDate
   @Property({ type: "number" })
   index!: number;
