@@ -39,8 +39,6 @@ export default function handleRequest(
 ) {
   const nonce = crypto.randomBytes(16).toString("base64");
   responseHeaders.set("Content-Security-Policy", getCSP(nonce));
-  responseHeaders.set("Referrer-Policy", "no-referrer");
-  responseHeaders.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains");
 
   return isbot(request.headers.get("user-agent"))
     ? handleBotRequest(request, responseStatusCode, responseHeaders, remixContext, nonce)
