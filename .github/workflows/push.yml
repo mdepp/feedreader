@@ -1,0 +1,35 @@
+name: Push Actions
+on: push
+
+jobs:
+  build:
+    name: Build App
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5433:5432
+        env:
+          POSTGRES_PASSWORD: password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 21.x
+      - run: npm ci
+      - run: npm run build
+      - run: npx mikro-orm migration:fresh
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5433
+      - run: npm run test --if-present
